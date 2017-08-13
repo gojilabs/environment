@@ -1,7 +1,6 @@
 package environment
 
 import (
-	"log"
 	"os"
 )
 
@@ -25,11 +24,11 @@ func Setup(environmentVariable string) string {
 		env = DEVELOPMENT
 	}
 
-	if Known() {
-		log.Println(String() + " environment ready.")
-	} else {
-		log.Println("Could not find environment variable " + envVar + ", running in an unknown environment.")
+	if Unknown() {
+		os.Stderr.WriteString("Could not determine runtime environment, continuing in development\n")
+		env = DEVELOPMENT
 	}
+	os.Stdout.WriteString("The " + String() + " environment is starting up...\n")
 
 	return env
 }
