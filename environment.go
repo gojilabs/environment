@@ -34,27 +34,30 @@ func Setup(environmentVariable string) string {
 }
 
 func String() string {
+	if env == "" {
+		return Setup("")
+	}
 	return env
 }
 
 func Development() bool {
-	return env == DEVELOPMENT
+	return String() == DEVELOPMENT
 }
 
 func Staging() bool {
-	return env == STAGING
+	return String() == STAGING
 }
 
 func Demo() bool {
-	return env == DEMO
+	return String() == DEMO
 }
 
 func Production() bool {
-	return env == PRODUCTION
+	return String() == PRODUCTION
 }
 
 func Test() bool {
-	return env == TEST
+	return String() == TEST
 }
 
 func Known() bool {
