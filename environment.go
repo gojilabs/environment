@@ -28,36 +28,40 @@ func Setup(environmentVariable string) string {
 		os.Stderr.WriteString("Could not determine runtime environment, continuing in development\n")
 		env = DEVELOPMENT
 	}
-	os.Stdout.WriteString("The " + String() + " environment is starting up...\n")
+	os.Stdout.WriteString("The " + getEnvString() + " environment is starting up...\n")
 
 	return env
 }
 
-func String() string {
+func getEnvString() string {
 	if env == "" {
 		return Setup("")
 	}
 	return env
 }
 
+func String() string {
+	return getEnvString()
+}
+
 func Development() bool {
-	return String() == DEVELOPMENT
+	return getEnvString() == DEVELOPMENT
 }
 
 func Staging() bool {
-	return String() == STAGING
+	return getEnvString() == STAGING
 }
 
 func Demo() bool {
-	return String() == DEMO
+	return getEnvString() == DEMO
 }
 
 func Production() bool {
-	return String() == PRODUCTION
+	return getEnvString() == PRODUCTION
 }
 
 func Test() bool {
-	return String() == TEST
+	return getEnvString() == TEST
 }
 
 func Known() bool {
