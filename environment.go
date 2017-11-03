@@ -1,81 +1,110 @@
 package environment
 
 import (
+	"errors"
 	"os"
 )
 
 var env string
 
-const DEFAULT_VAR = "SERVER_ENV"
-const PRODUCTION = "production"
-const DEVELOPMENT = "development"
-const DEMO = "demo"
-const STAGING = "staging"
-const TEST = "test"
+const Production = "production"
+const Development = "development"
+const Demo = "demo"
+const Staging = "staging"
+const Test = "test"
 
-func Setup(environmentVariable string) string {
-	envVar := environmentVariable
-	if envVar == "" {
-		envVar = DEFAULT_VAR
+func SetFromEnv(environmentVariable string) error {
+	if env != "" {
+		return errors.New("environment: cannot change environment after setting it")
 	}
 
-	env = os.Getenv(envVar)
+	if environmentVariable == "" {
+		return errors.New("environment: no environment variable specified")
+	}
+
+	env = os.Getenv(environmentVariable)
 	if env == "" {
-		env = DEVELOPMENT
+		return errors.New("environment: environment variable is empty")
 	}
 
-	if Unknown() {
-		os.Stderr.WriteString("Could not determine runtime environment, continuing in development\n")
-		env = DEVELOPMENT
+	if IsUnknown() {
+		return errors.New("environment: unknown environment type " + env)
 	}
-	os.Stdout.WriteString("The " + getEnvString() + " environment is starting up...\n")
+	os.Stdout.WriteString("Initializing " + env + " environment...\n")
 
-	return env
+	return nil
 }
 
-func getEnvString() string {
-	if env == "" {
-		return Setup("")
+func fromString(value string) error {
+	if env != "" {
+		return errors.New("environment: cannot change environment after setting it")
 	}
-	return env
+
+	if IsUnknown() {
+		return errors.New("environment: unknown environment type " + env)
+	}
+	os.Stdout.WriteString("Initializing " + env + " environment...\n")
+
+	return nil
+
 }
 
 func String() string {
-	return getEnvString()
+	return env
 }
 
-func Development() bool {
-	return getEnvString() == DEVELOPMENT
+func SetDevelopment() error {
+	return fromString(Development)
 }
 
-func Staging() bool {
-	return getEnvString() == STAGING
+func IsDevelopment() bool {
+	return env == Development
 }
 
-func Demo() bool {
-	return getEnvString() == DEMO
+func SetStaging() error {
+	return fromString(Staging)
 }
 
-func Production() bool {
-	return getEnvString() == PRODUCTION
+func IsStaging() bool {
+	return env == Staging
 }
 
-func Test() bool {
-	return getEnvString() == TEST
+func SetDemo() error {
+	return fromString(Demo)
 }
 
-func Known() bool {
-	return Production() || Demo() || Staging() || Test() || Development()
+func IsDemo() bool {
+	return env == Demo
 }
 
-func Local() bool {
-	return Development() || Test()
+func SetProduction() error {
+	return fromString(Production)
 }
 
-func Remote() bool {
-	return !Local()
+func IsProduction() bool {
+	return env == Production
 }
 
-func Unknown() bool {
-	return !Known()
+func SetTest() error {
+	return fromString(Test)
+}
+
+func IsTest() bool {
+	return env == Test
+}
+
+func IsKnown() bool {
+	return IsProduction() || IsDemo() || IsStaging() || IsTest() || IsDevelopment()
+}
+
+func IsLocal() bool {
+	return IsDevelopment() || IsTest()
+}
+
+func IsRemote() bool {
+	return !IsLocal()
+}
+
+func IsUnknown() bool {
+	return !IsKnown()
 }
