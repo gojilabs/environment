@@ -43,6 +43,8 @@ func fromString(value string) error {
 	if IsUnknown() {
 		return errors.New("environment: unknown environment type " + env)
 	}
+
+	env = value
 	os.Stdout.WriteString("Initializing " + env + " environment...\n")
 
 	return nil
