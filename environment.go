@@ -48,7 +48,6 @@ func fromString(value string) error {
 	os.Stdout.WriteString("Initializing " + env + " environment...\n")
 
 	return nil
-
 }
 
 func String() string {
