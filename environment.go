@@ -22,29 +22,18 @@ func SetFromEnv(environmentVariable string) error {
 		return errors.New("environment: no environment variable specified")
 	}
 
-	env = os.Getenv(environmentVariable)
-	if env == "" {
-		return errors.New("environment: environment variable is empty")
-	}
-
-	if IsUnknown() {
-		return errors.New("environment: unknown environment type " + env)
-	}
-	os.Stdout.WriteString("Initializing " + env + " environment...\n")
-
-	return nil
+	return SetFromString(os.Getenv(environmentVariable))
 }
 
-func fromString(value string) error {
-	if env != "" {
-		return errors.New("environment: cannot change environment after setting it")
+func SetFromString(value string) error {
+	if value == "" {
+		return errors.New("environment: environment variable is empty")
 	}
+	env = value
 
 	if IsUnknown() {
 		return errors.New("environment: unknown environment type " + env)
 	}
-
-	env = value
 	os.Stdout.WriteString("Initializing " + env + " environment...\n")
 
 	return nil
@@ -55,7 +44,7 @@ func String() string {
 }
 
 func SetDevelopment() error {
-	return fromString(Development)
+	return SetFromString(Development)
 }
 
 func IsDevelopment() bool {
@@ -63,7 +52,7 @@ func IsDevelopment() bool {
 }
 
 func SetStaging() error {
-	return fromString(Staging)
+	return SetFromString(Staging)
 }
 
 func IsStaging() bool {
@@ -71,7 +60,7 @@ func IsStaging() bool {
 }
 
 func SetDemo() error {
-	return fromString(Demo)
+	return SetFromString(Demo)
 }
 
 func IsDemo() bool {
@@ -79,7 +68,7 @@ func IsDemo() bool {
 }
 
 func SetProduction() error {
-	return fromString(Production)
+	return SetFromString(Production)
 }
 
 func IsProduction() bool {
@@ -87,7 +76,7 @@ func IsProduction() bool {
 }
 
 func SetTest() error {
-	return fromString(Test)
+	return SetFromString(Test)
 }
 
 func IsTest() bool {
